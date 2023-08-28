@@ -10,11 +10,16 @@ import cn.vanillazi.common.error.ErrorCode;
 import cn.vanillazi.common.result.Result;
 import cn.vanillazi.common.result.Results;
 import cn.vanillazi.learn.system.entity.User;
+import cn.vanillazi.learn.system.event.UserUpdate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserRepository {
 
+	private final ApplicationEventPublisher eventPublisher;
 	private List<User> users=new CopyOnWriteArrayList<>();
 
 	public Result<List<User>> users(){
@@ -37,6 +42,9 @@ public class UserRepository {
 		}else {
 			var targetUser=target.getData();
 			targetUser.setAge(user.getAge());
+			var uu=new UserUpdate();
+			uu.setUser(user);
+			eventPublisher.publishEvent(uu);
 			return Results.success();
 		}
 	}
