@@ -19,6 +19,6 @@ public class ArticleController {
 	@GetMapping
 	public String getArticles() {
 	
-		return "just for "+userRepository.users().get(0)+" at "+ LocalDateTime.now();
+		return "just for "+userRepository.users().getData().get(0)+" at "+ LocalDateTime.now();
 	}
 }

@@ -1,17 +1,42 @@
 package cn.vanillazi.learn.system.controller;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import cn.vanillazi.common.result.Result;
+import cn.vanillazi.learn.system.entity.User;
+import cn.vanillazi.learn.system.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/hello")
+@RequestMapping("/user")
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
+	private final UserRepository userRepository;
+
+	@GetMapping("/{name}")
+	public Result<User> getName(@PathVariable("name") String name) {
+		return userRepository.getUser(name);
+	}
 	@GetMapping
-	public String greet(String name) {
-		return "hello "+name+" at "+LocalDateTime.now();
+	public Result<List<User>> list() {
+		return userRepository.users();
+	}
+	@PostMapping
+	public Result<Void> addUser(@Validated @RequestBody User user){
+		return userRepository.add(user);
+	}
+
+	@PutMapping
+	public Result<Void> updateUser(@Validated @RequestBody User user){
+		return userRepository.update(user);
+	}
+
+	@DeleteMapping
+	public Result<Void> deleteUser(@RequestParam("name") String name){
+		return userRepository.delete(name);
 	}
 }
